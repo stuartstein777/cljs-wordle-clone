@@ -49,10 +49,11 @@
                               vals
                               (apply str))]
                 (if (w/words (str/lower-case word))
-                  (-> (assoc db :current-word word)
-                      (assoc :error false))
-                  (-> (assoc db :current-word "")
-                      (assoc :error true))))
+                  (-> db
+                      (assoc :error false)
+                      (update :current-row inc)
+                      (assoc :current-col 1))
+                  (assoc db :error true)))
               db)
 
     (if (and (valid-key? key) (not= current-col 5))

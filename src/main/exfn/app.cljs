@@ -33,42 +33,54 @@
        [:div.row {:style {:justify-content :center}}
         (for [n (range 1 6)]
           [:div.letter-cell
-           {:data-filled (and (= n current-col) (not= "" (get-in rows [1 n])))
+           {:data-filled (and (= n current-col)
+                              (= 1 current-row)
+                              (not= "" (get-in rows [1 n])))
             :data-error (and error (= current-row 1))
             :key (str "1-" n)}
            (get-in rows [1 n])])]
        [:div.row {:style {:justify-content :center}}
         (for [n (range 1 6)]
           [:div.letter-cell
-           {:data-filled (not= "" (get-in rows [2 n]))
+           {:data-filled (and (= n current-col)
+                              (= 2 current-row)
+                              (not= "" (get-in rows [2 n])))
             :data-error (and error (= current-row 2))
             :key (str "2-" n)}
            (get-in rows [2 n])])]
        [:div.row {:style {:justify-content :center}}
         (for [n (range 1 6)]
           [:div.letter-cell
-           {:data-filled (not= "" (get-in rows [3 n]))
+           {:data-filled (and (= n current-col)
+                              (= 3 current-row)
+                              (not= "" (get-in rows [3 n])))
             :data-error (and error (= current-row 3))
             :key (str "3-" n)}
            (get-in rows [3 n])])]
        [:div.row {:style {:justify-content :center}}
         (for [n (range 1 6)]
           [:div.letter-cell
-           {:data-filled (not= "" (get-in rows [4 n]))
+           {:data-filled (and (= n current-col)
+                              (= 4 current-row)
+                              (not= "" (get-in rows [4 n])))
             :data-error (and error (= current-row 4))
             :key (str "4-" n)}
            (get-in rows [4 n])])]
        [:div.row {:style {:justify-content :center}}
         (for [n (range 1 6)]
           [:div.letter-cell
-           {:data-filled (not= "" (get-in rows [5 n]))
+           {:data-filled (and (= n current-col)
+                              (= 5 current-row)
+                              (not= "" (get-in rows [5 n])))
             :data-error (and error (= current-row 5))
             :key (str "5-" n)}
            (get-in rows [5 n])])]
        [:div.row {:style {:justify-content :center}}
         (for [n (range 1 6)]
           [:div.letter-cell
-           {:data-filled (not= "" (get-in rows [6 n]))
+           {:data-filled (and (= n current-col)
+                              (= 6 current-row)
+                              (not= "" (get-in rows [6 n])))
             :key (str "6-" n)}
            (get-in rows [6 n])])]]
       [:div.keyboard

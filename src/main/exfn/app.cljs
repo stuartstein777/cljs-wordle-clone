@@ -18,9 +18,6 @@
         current-row @(rf/subscribe [:current-row])
         guesses     @(rf/subscribe [:guesses])
         row-guess   (guesses row)]
-    (prn row-guess)
-    (prn word)
-    (prn current-row)
     (if (> current-row row)
       (if (and row-guess ((set word) (row-guess col)))
         (if (= (nth word (dec col)) (row-guess col))
@@ -28,9 +25,6 @@
           "#b59f3b")
         "#3a3a3c")
       "#121213")))
-(comment
-  (guess-background 1 1)
-  )
 
 (defn guess-row [current-row current-col rows error row-no]
   [:div.row {:style {:justify-content :center}}
@@ -44,6 +38,12 @@
        :key (str row-no "-" n)}
       (get-in rows [row-no n])])])
 
+(defn get-key-bg [key]
+  (let [guessed-letters @(rf/subscribe [:guessed-letters])]
+    (prn key (guessed-letters key))
+    (if (guessed-letters key)
+      "#3a3a3c"
+      "#818384")))
 
 ;; -- App -------------------------------------------------------------------------
 (defn app []
@@ -70,15 +70,18 @@
        [:div.keyboard-row
         (for [letter "QWERTYUIOP"]
           [:div.keyboard-key {:on-click #(rf/dispatch [:clicked letter])
+                              :style {:background-color (get-key-bg letter)}
                               :key letter} letter])]
        [:div.keyboard-row
         (for [letter "ASDFGHJKL"]
           [:div.keyboard-key {:on-click #(rf/dispatch [:clicked letter])
+                              :style {:background-color (get-key-bg letter)}
                               :key letter} letter])]
        [:div.keyboard-row
         [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "ENTER"])} "ENTER"]
         (for [letter "ZXCVBNM"]
           [:div.keyboard-key {:on-click #(rf/dispatch [:clicked letter])
+                              :style {:background-color (get-key-bg letter)}
                               :key letter} letter])
         [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "DEL"])} "DEL"]]]]]))
 

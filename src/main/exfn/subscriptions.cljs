@@ -20,3 +20,7 @@
 (rf/reg-sub
  :current-col
  (fn [db _] (db :current-col)))
+
+(rf/reg-sub
+ :guessed-letters
+ (fn [db _] (db :guessed-letters)))

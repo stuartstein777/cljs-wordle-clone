@@ -26,17 +26,13 @@
     :current-col 0
     :error false}))
 
-(defn word-in-word-list? [word]
-  
-  )
-
 (defn clamp [n]
   (min (max n 0) 5))
 
 (defn valid-key? [key]
   ((set "ABCDEFGHJIKLMNOPQRSTUVWXYZ") key))
 
-(defn process-key [{:keys [guesses current-row current-col] :as db} key]
+(defn process-key [{:keys [guesses current-row current-col :guessed-letters] :as db} key]
   (condp = key
     "DEL" (if (>= current-col 1)
             (-> db
@@ -53,6 +49,7 @@
                   (-> db
                       (assoc :error false)
                       (update :current-row inc)
+                      (assoc :guessed-letters (set/union guessed-letters (set word)))
                       (assoc :current-col 0))
                   (assoc db :error true)))
               db)

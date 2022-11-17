@@ -52,7 +52,7 @@
                   (-> db
                       (assoc :error false)
                       (update :current-row inc)
-                      (assoc :current-col 1))
+                      (assoc :current-col 0))
                   (assoc db :error true)))
               db)
 

@@ -4,7 +4,8 @@
             [exfn.subscriptions]
             [exfn.events]
             [exfn.logic :as ms]
-            [goog.string.format]))
+            [goog.string.format]
+            [re-pressed.core :as rp]))
 
 
 
@@ -78,15 +79,35 @@
 ;; Initialize the initial db state.
 (defn ^:dev/after-load start
   []
+  (rf/clear-subscription-cache!)
   (dom/render [app]
               (.getElementById js/document "app")))
 
 (defn ^:export init []
+  (set! (.-onkeydown js/window)
+        (fn [gfg]
+          (rf/dispatch-sync [:key-pressed (.-keyCode gfg)])))
+  #_(rf/dispatch-sync [::rp/add-keyboard-event-listener "keypress" :clear-on-success-event-match])
+  
   (start))
 
 ; dispatch the event which will create the initial state. 
 (defonce initialize (rf/dispatch-sync [:initialize]))
+#_(defonce set-up-keypress (rf/dispatch-sync [::rp/add-keyboard-event-listener "keypress" :clear-on-success-event-match]))
+
+
+
 
 (comment
+  "window.onkeydown= function(gfg){
+        if(gfg.keyCode === space_bar){
+            value++;
+            demo.innerHTML = value;
+        };
+        if(gfg.keyCode === right_arrow)
+       {
+           alert("Welcome to GeeksForGeeks!");
+       };
+    };"
   
   )

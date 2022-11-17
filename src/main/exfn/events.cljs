@@ -3,7 +3,8 @@
             [exfn.logic :as bf]
             [clojure.set :as set]
             [clojure.string :as str]
-            [exfn.words :as w]))
+            [exfn.words :as w]
+            [re-pressed.core :as rp]))
 
 (rf/reg-event-db
  :initialize
@@ -27,23 +28,31 @@
   
   )
 
+(defn process-key [{:keys [guesses current-row current-col] :as db} key]
+  (condp = key
+    "DEL" (-> db
+              (update :guesses assoc-in [current-row (dec current-col)] "")
+              (update :current-col #(max (dec %) 1)))
+
+    "ENTER" (let [word (->> (get-in guesses [current-row])
+                            vals
+                            (apply str))]
+              (if (w/words (str/lower-case word))
+                (-> (assoc db :current-word word)
+                    (assoc :error ""))
+                (-> (assoc db :current-word "")
+                    (assoc :error "Invalid word"))))
+
+    (-> db
+      (update :guesses assoc-in [current-row current-col] key)
+      (update :current-col #(min (inc %) 6)))))
+
 (rf/reg-event-db
  :clicked
- (fn [{:keys [guesses current-row current-col] :as db} [_ key]]
-   (condp = key
-     "DEL" (-> db
-               (update :guesses assoc-in [current-row (dec current-col)] "")
-               (update :current-col #(max (dec %) 1)))
-     
-     "ENTER" (let [word (->> (get-in guesses [current-row])
-                             vals
-                             (apply str))]
-               (if (w/words (str/lower-case word))
-                 (-> (assoc db :current-word word)
-                     (assoc :error ""))
-                 (-> (assoc db :current-word "")
-                     (assoc :error "Invalid word"))))
-     
-     (-> db
-         (update :guesses assoc-in [current-row current-col] key)
-         (update :current-col #(min (inc %) 6))))))
+ (fn [db [_ key]]
+   (process-key db key)))
+
+(rf/reg-event-db
+ :key-pressed
+ (fn [db [_ key]]
+   (process-key db ({13 "ENTER", 8 "DEL"} key (char key)))))

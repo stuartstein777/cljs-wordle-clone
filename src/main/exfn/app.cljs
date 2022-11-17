@@ -20,9 +20,6 @@
         [:h1 "Wordle"]]
        [:div.col.col-lg-4
         [:i.fas.fa-cubes.stats]]]
-      [:div.row
-       [:p
-        (str "word: " word)]]
       [:div.row.guesses
        [:div.row {:style {:justify-content :center}}
         [:div.letter-cell (get-in rows [1 1])]

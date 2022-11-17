@@ -12,7 +12,7 @@
 ;; -- App -------------------------------------------------------------------------
 (defn app []
   (let [word  @(rf/subscribe [:word])
-        rows @(rf/subscribe [:guesses])]
+        rows  @(rf/subscribe [:guesses])]
     [:div.container
      [:div.game
       [:div.row
@@ -62,37 +62,36 @@
         [:div.letter-cell (get-in rows [6 5])]]]
       [:div.keyboard
        [:div.keyboard-row
-        [:div.keyboard-key "Q"]
-        [:div.keyboard-key "W"]
-        [:div.keyboard-key "E"]
-        [:div.keyboard-key "R"]
-        [:div.keyboard-key "T"]
-        [:div.keyboard-key "Y"]
-        [:div.keyboard-key "U"]
-        [:div.keyboard-key "I"]
-        [:div.keyboard-key "O"]
-        [:div.keyboard-key "P"]]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "Q"])} "Q"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "W"])} "W"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "E"])} "E"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "R"])} "R"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "T"])} "T"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "Y"])} "Y"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "U"])} "U"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "I"])} "I"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "O"])} "O"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "P"])} "P"]]
        [:div.keyboard-row
-        [:div.keyboard-key "A"]
-        [:div.keyboard-key "S"]
-        [:div.keyboard-key "D"]
-        [:div.keyboard-key "F"]
-        [:div.keyboard-key "G"]
-        [:div.keyboard-key "H"]
-        [:div.keyboard-key "J"]
-        [:div.keyboard-key "K"]
-        [:div.keyboard-key "L"]]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "A"])} "A"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "S"])} "S"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "D"])} "D"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "F"])} "F"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "G"])} "G"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "H"])} "H"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "J"])} "J"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "K"])} "K"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "L"])} "L"]]
        [:div.keyboard-row
-        [:div.keyboard-key "ENTER"]
-        [:div.keyboard-key "Z"]
-        [:div.keyboard-key "X"]
-        [:div.keyboard-key "C"]
-        [:div.keyboard-key "V"]
-        [:div.keyboard-key "B"]
-        [:div.keyboard-key "N"]
-        [:div.keyboard-key "M"]
-        [:div.keyboard-key "DEL"]]
-       ]]]))
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "ENTER"])} "ENTER"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "Z"])} "Z"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "X"])} "X"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "C"])} "C"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "V"])} "V"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "B"])} "B"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "N"])} "N"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "M"])} "M"]
+        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "DEL"])} "DEL"]]]]]))
 
 ;; -- After-Load --------------------------------------------------------------------
 ;; Do this after the page has loaded.

@@ -21,3 +21,8 @@
     :guessed-letters #{}
     }))
 
+(rf/reg-event-db
+ :clicked
+ (fn [db [_ key]]
+   #_(update db :guessed-letters conj key)
+   db))

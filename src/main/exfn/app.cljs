@@ -13,6 +13,25 @@
      {:data-error error}
      "Not in word list!"]))
 
+(defn guess-background [col row]
+  (let [word        @(rf/subscribe [:word])
+        current-row @(rf/subscribe [:current-row])
+        guesses     @(rf/subscribe [:guesses])
+        row-guess   (guesses row)]
+    (prn row-guess)
+    (prn word)
+    (prn current-row)
+    (if (> current-row row)
+      (if (and row-guess ((set word) (row-guess col)))
+        (if (= (nth word (dec col)) (row-guess col))
+          "#538d4e"
+          "#b59f3b")
+        "#3a3a3c")
+      "#121213")))
+(comment
+  (guess-background 1 1)
+  )
+
 (defn guess-row [current-row current-col rows error row-no]
   [:div.row {:style {:justify-content :center}}
    (for [n (range 1 6)]
@@ -21,13 +40,14 @@
                          (= row-no current-row)
                          (not= "" (get-in rows [row-no n])))
        :data-error (and error (= current-row row-no))
+       :style {:background-color (guess-background n row-no)}
        :key (str row-no "-" n)}
       (get-in rows [row-no n])])])
 
+
 ;; -- App -------------------------------------------------------------------------
 (defn app []
-  (let [word  @(rf/subscribe [:word])
-        rows  @(rf/subscribe [:guesses])
+  (let [rows  @(rf/subscribe [:guesses])
         error @(rf/subscribe [:error])
         current-row @(rf/subscribe [:current-row])
         current-col @(rf/subscribe [:current-col])]

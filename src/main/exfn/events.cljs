@@ -11,7 +11,8 @@
  (fn [_ _]
    {:word    (-> w/words
                  shuffle
-                 first)
+                 first
+                 str/upper-case)
     
     :guesses {1 {1 "", 2 "", 3 "", 4 "", 5 ""}
               2 {1 "", 2 "", 3 "", 4 "", 5 ""}

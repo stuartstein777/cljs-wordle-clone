@@ -2,6 +2,7 @@
   (:require [re-frame.core :as rf]
             [exfn.logic :as bf]
             [clojure.set :as set]
+            [clojure.string :as str]
             [exfn.words :as w]))
 
 (rf/reg-event-db
@@ -28,18 +29,27 @@
 (defn dec-min [n]
   (max (dec n) 1))
 
+(defn word-in-word-list? [word]
+  
+  )
+
 (rf/reg-event-db
  :clicked
- (fn [db [_ key]]
+ (fn [{:keys [guesses current-row current-col] :as db} [_ key]]
    (condp = key
      "DEL" (-> db
-               (update :guesses assoc-in [(db :current-row) (dec (db :current-col))] "")
+               (update :guesses assoc-in [current-row (dec current-col)] "")
                (update :current-col dec-min))
      
-     "ENTER" (-> db)
+     "ENTER" (let [word (->> (get-in guesses [current-row])
+                             vals
+                             (apply str))]
+               (if (w/words (str/lower-case word))
+                 (-> (assoc db :current-word word)
+                     (assoc :error ""))
+                 (-> (assoc db :current-word "")
+                     (assoc :error "Invalid word"))))
      
      (-> db
-         (update :guesses assoc-in [(db :current-row) (db :current-col)] key)
-         (update :current-col inc-max))
-     
-     )))
+         (update :guesses assoc-in [current-row current-col] key)
+         (update :current-col inc-max)))))

@@ -22,30 +22,43 @@
     
     :guessed-letters #{}
     :current-row 1
-    :current-col 1}))
+    :current-col 0
+    :error false}))
 
 (defn word-in-word-list? [word]
   
   )
 
+(defn clamp [n]
+  (min (max n 0) 5))
+
+(defn valid-key? [key]
+  ((set "ABCDEFGHJIKLMNOPQRSTUVWXYZ") key))
+
 (defn process-key [{:keys [guesses current-row current-col] :as db} key]
   (condp = key
-    "DEL" (-> db
-              (update :guesses assoc-in [current-row (dec current-col)] "")
-              (update :current-col #(max (dec %) 1)))
+    "DEL" (if (>= current-col 1)
+            (-> db
+                (update :guesses assoc-in [current-row current-col] "")
+                (update :current-col #(clamp (dec %)))
+                (assoc :error false))
+            db)
 
     "ENTER" (let [word (->> (get-in guesses [current-row])
                             vals
                             (apply str))]
               (if (w/words (str/lower-case word))
                 (-> (assoc db :current-word word)
-                    (assoc :error ""))
+                    (assoc :error false))
                 (-> (assoc db :current-word "")
-                    (assoc :error "Invalid word"))))
+                    (assoc :error true))))
 
-    (-> db
-      (update :guesses assoc-in [current-row current-col] key)
-      (update :current-col #(min (inc %) 6)))))
+    (if (and (valid-key? key) (not= current-col 5))
+      (-> db
+          (update :guesses assoc-in [current-row (inc current-col)] key)
+          (update :current-col #(clamp (inc %)))
+          (assoc :error false))
+      db)))
 
 (rf/reg-event-db
  :clicked

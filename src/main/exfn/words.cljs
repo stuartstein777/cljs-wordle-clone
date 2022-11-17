@@ -247,6 +247,7 @@
     "sport"
     "false"
     "faith"
+    "heard"
     "limit"
     "adios"
     "power"

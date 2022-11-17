@@ -13,6 +13,16 @@
      {:data-error error}
      "Not in word list!"]))
 
+(defn guess-row [current-row current-col rows error row-no]
+  [:div.row {:style {:justify-content :center}}
+   (for [n (range 1 6)]
+     [:div.letter-cell
+      {:data-filled (and (= n current-col)
+                         (= row-no current-row)
+                         (not= "" (get-in rows [row-no n])))
+       :data-error (and error (= current-row row-no))
+       :key (str row-no "-" n)}
+      (get-in rows [row-no n])])])
 
 ;; -- App -------------------------------------------------------------------------
 (defn app []
@@ -30,59 +40,12 @@
        [:div.col.col-lg-4
         [:i.fas.fa-cubes.stats]]]
       [:div.row.guesses
-       [:div.row {:style {:justify-content :center}}
-        (for [n (range 1 6)]
-          [:div.letter-cell
-           {:data-filled (and (= n current-col)
-                              (= 1 current-row)
-                              (not= "" (get-in rows [1 n])))
-            :data-error (and error (= current-row 1))
-            :key (str "1-" n)}
-           (get-in rows [1 n])])]
-       [:div.row {:style {:justify-content :center}}
-        (for [n (range 1 6)]
-          [:div.letter-cell
-           {:data-filled (and (= n current-col)
-                              (= 2 current-row)
-                              (not= "" (get-in rows [2 n])))
-            :data-error (and error (= current-row 2))
-            :key (str "2-" n)}
-           (get-in rows [2 n])])]
-       [:div.row {:style {:justify-content :center}}
-        (for [n (range 1 6)]
-          [:div.letter-cell
-           {:data-filled (and (= n current-col)
-                              (= 3 current-row)
-                              (not= "" (get-in rows [3 n])))
-            :data-error (and error (= current-row 3))
-            :key (str "3-" n)}
-           (get-in rows [3 n])])]
-       [:div.row {:style {:justify-content :center}}
-        (for [n (range 1 6)]
-          [:div.letter-cell
-           {:data-filled (and (= n current-col)
-                              (= 4 current-row)
-                              (not= "" (get-in rows [4 n])))
-            :data-error (and error (= current-row 4))
-            :key (str "4-" n)}
-           (get-in rows [4 n])])]
-       [:div.row {:style {:justify-content :center}}
-        (for [n (range 1 6)]
-          [:div.letter-cell
-           {:data-filled (and (= n current-col)
-                              (= 5 current-row)
-                              (not= "" (get-in rows [5 n])))
-            :data-error (and error (= current-row 5))
-            :key (str "5-" n)}
-           (get-in rows [5 n])])]
-       [:div.row {:style {:justify-content :center}}
-        (for [n (range 1 6)]
-          [:div.letter-cell
-           {:data-filled (and (= n current-col)
-                              (= 6 current-row)
-                              (not= "" (get-in rows [6 n])))
-            :key (str "6-" n)}
-           (get-in rows [6 n])])]]
+       [guess-row current-row current-col rows error 1]
+       [guess-row current-row current-col rows error 2]
+       [guess-row current-row current-col rows error 3]
+       [guess-row current-row current-col rows error 4]
+       [guess-row current-row current-col rows error 5]
+       [guess-row current-row current-col rows error 6]]
       [:div.keyboard
        [:div.keyboard-row
         (for [letter "QWERTYUIOP"]

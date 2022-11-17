@@ -22,11 +22,14 @@
         [:i.fas.fa-cubes.stats]]]
       [:div.row.guesses
        [:div.row {:style {:justify-content :center}}
-        [:div.letter-cell (get-in rows [1 1])]
-        [:div.letter-cell (get-in rows [1 2])]
-        [:div.letter-cell (get-in rows [1 3])]
-        [:div.letter-cell (get-in rows [1 4])]
-        [:div.letter-cell (get-in rows [1 5])]]
+        [:div.letter-cell
+         {:style {:animation-delay "0ms"}
+          :data-filled (not= "" (get-in rows [1 1]))}
+         (get-in rows [1 1])]
+        [:div.letter-cell {:style {:animation-delay "100ms"}} (get-in rows [1 2])]
+        [:div.letter-cell {:style {:animation-delay "200ms"}} (get-in rows [1 3])]
+        [:div.letter-cell {:style {:animation-delay "300ms"}} (get-in rows [1 4])]
+        [:div.letter-cell {:style {:animation-delay "400ms"}} (get-in rows [1 5])]]
        [:div.row {:style {:justify-content :center}}
         [:div.letter-cell (get-in rows [2 1])]
         [:div.letter-cell (get-in rows [2 2])]

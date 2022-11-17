@@ -22,75 +22,55 @@
         [:i.fas.fa-cubes.stats]]]
       [:div.row.guesses
        [:div.row {:style {:justify-content :center}}
-        [:div.letter-cell
-         {:style {:animation-delay "0ms"}
-          :data-filled (not= "" (get-in rows [1 1]))}
-         (get-in rows [1 1])]
-        [:div.letter-cell {:style {:animation-delay "100ms"}} (get-in rows [1 2])]
-        [:div.letter-cell {:style {:animation-delay "200ms"}} (get-in rows [1 3])]
-        [:div.letter-cell {:style {:animation-delay "300ms"}} (get-in rows [1 4])]
-        [:div.letter-cell {:style {:animation-delay "400ms"}} (get-in rows [1 5])]]
+        (for [n (range 1 6)]
+          [:div.letter-cell
+           {:data-filled (not= "" (get-in rows [1 n]))
+            :key (str "1-" n)}
+           (get-in rows [1 n])])]
        [:div.row {:style {:justify-content :center}}
-        [:div.letter-cell (get-in rows [2 1])]
-        [:div.letter-cell (get-in rows [2 2])]
-        [:div.letter-cell (get-in rows [2 3])]
-        [:div.letter-cell (get-in rows [2 4])]
-        [:div.letter-cell (get-in rows [2 5])]]
+        (for [n (range 1 6)]
+          [:div.letter-cell
+           {:data-filled (not= "" (get-in rows [2 n]))
+            :key (str "2-" n)}
+           (get-in rows [2 n])])]
        [:div.row {:style {:justify-content :center}}
-        [:div.letter-cell (get-in rows [3 1])]
-        [:div.letter-cell (get-in rows [3 2])]
-        [:div.letter-cell (get-in rows [3 3])]
-        [:div.letter-cell (get-in rows [3 4])]
-        [:div.letter-cell (get-in rows [3 5])]]
+        (for [n (range 1 6)]
+          [:div.letter-cell
+           {:data-filled (not= "" (get-in rows [3 n]))
+            :key (str "3-" n)}
+           (get-in rows [3 n])])]
        [:div.row {:style {:justify-content :center}}
-        [:div.letter-cell (get-in rows [4 1])]
-        [:div.letter-cell (get-in rows [4 2])]
-        [:div.letter-cell (get-in rows [4 3])]
-        [:div.letter-cell (get-in rows [4 4])]
-        [:div.letter-cell (get-in rows [4 5])]]
+        (for [n (range 1 6)]
+          [:div.letter-cell
+           {:data-filled (not= "" (get-in rows [4 n]))
+            :key (str "4-" n)}
+           (get-in rows [4 n])])]
        [:div.row {:style {:justify-content :center}}
-        [:div.letter-cell (get-in rows [5 1])]
-        [:div.letter-cell (get-in rows [5 2])]
-        [:div.letter-cell (get-in rows [5 3])]
-        [:div.letter-cell (get-in rows [5 4])]
-        [:div.letter-cell (get-in rows [5 5])]]
+        (for [n (range 1 6)]
+          [:div.letter-cell
+           {:data-filled (not= "" (get-in rows [5 n]))
+            :key (str "5-" n)}
+           (get-in rows [5 n])])]
        [:div.row {:style {:justify-content :center}}
-        [:div.letter-cell (get-in rows [6 1])]
-        [:div.letter-cell (get-in rows [6 2])]
-        [:div.letter-cell (get-in rows [6 3])]
-        [:div.letter-cell (get-in rows [6 4])]
-        [:div.letter-cell (get-in rows [6 5])]]]
+        (for [n (range 1 6)]
+          [:div.letter-cell
+           {:data-filled (not= "" (get-in rows [6 n]))
+            :key (str "6-" n)}
+           (get-in rows [6 n])])]]
       [:div.keyboard
        [:div.keyboard-row
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "Q"])} "Q"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "W"])} "W"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "E"])} "E"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "R"])} "R"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "T"])} "T"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "Y"])} "Y"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "U"])} "U"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "I"])} "I"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "O"])} "O"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "P"])} "P"]]
+        (for [letter "QWERTYUIOP"]
+          [:div.keyboard-key {:on-click #(rf/dispatch [:clicked letter])
+                              :key letter} letter])]
        [:div.keyboard-row
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "A"])} "A"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "S"])} "S"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "D"])} "D"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "F"])} "F"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "G"])} "G"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "H"])} "H"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "J"])} "J"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "K"])} "K"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "L"])} "L"]]
+        (for [letter "ASDFGHJKL"]
+          [:div.keyboard-key {:on-click #(rf/dispatch [:clicked letter])
+                              :key letter} letter])]
        [:div.keyboard-row
         [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "ENTER"])} "ENTER"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "Z"])} "Z"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "X"])} "X"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "C"])} "C"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "V"])} "V"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "B"])} "B"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "N"])} "N"]
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "M"])} "M"]
+        (for [letter "ZXCVBNM"]
+          [:div.keyboard-key {:on-click #(rf/dispatch [:clicked letter])
+                              :key letter} letter])
         [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "DEL"])} "DEL"]]]]]))
 
 ;; -- After-Load --------------------------------------------------------------------

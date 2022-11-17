@@ -44,14 +44,16 @@
                 (assoc :error false))
             db)
 
-    "ENTER" (let [word (->> (get-in guesses [current-row])
-                            vals
-                            (apply str))]
-              (if (w/words (str/lower-case word))
-                (-> (assoc db :current-word word)
-                    (assoc :error false))
-                (-> (assoc db :current-word "")
-                    (assoc :error true))))
+    "ENTER" (if (= 5 current-col)
+              (let [word (->> (get-in guesses [current-row])
+                              vals
+                              (apply str))]
+                (if (w/words (str/lower-case word))
+                  (-> (assoc db :current-word word)
+                      (assoc :error false))
+                  (-> (assoc db :current-word "")
+                      (assoc :error true))))
+              db)
 
     (if (and (valid-key? key) (not= current-col 5))
       (-> db

@@ -7,7 +7,11 @@
             [goog.string.format]
             [re-pressed.core :as rp]))
 
-
+(defn error-message []
+  (let [error @(rf/subscribe [:error])]
+    [:div.invalid-word-error
+     {:data-error error}
+     "Not in word list!"]))
 
 
 ;; -- App -------------------------------------------------------------------------
@@ -19,6 +23,7 @@
         current-col @(rf/subscribe [:current-col])]
     [:div.container
      [:div.game
+      [error-message]
       [:div.row
        [:div.col.col-lg-8
         [:h1 "Wordle"]]

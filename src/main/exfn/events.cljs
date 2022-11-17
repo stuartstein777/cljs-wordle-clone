@@ -23,12 +23,6 @@
     :current-row 1
     :current-col 1}))
 
-(defn inc-max [n]
-  (min (inc n) 6))
-
-(defn dec-min [n]
-  (max (dec n) 1))
-
 (defn word-in-word-list? [word]
   
   )
@@ -39,7 +33,7 @@
    (condp = key
      "DEL" (-> db
                (update :guesses assoc-in [current-row (dec current-col)] "")
-               (update :current-col dec-min))
+               (update :current-col #(max (dec %) 1)))
      
      "ENTER" (let [word (->> (get-in guesses [current-row])
                              vals
@@ -52,4 +46,4 @@
      
      (-> db
          (update :guesses assoc-in [current-row current-col] key)
-         (update :current-col inc-max)))))
+         (update :current-col #(min (inc %) 6))))))

@@ -2,5 +2,9 @@
   (:require [re-frame.core :as rf]))
 
 (rf/reg-sub
- :game-won?
- (fn [db _] (db :game-won?)))
+ :word
+ (fn [db _] (db :word)))
+
+(rf/reg-sub
+ :guesses
+ (fn [db _] (db :guesses)))

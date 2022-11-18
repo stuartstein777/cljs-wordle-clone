@@ -2,6 +2,7 @@
   (:require [reagent.dom :as dom]
             [re-frame.core :as rf]
             [exfn.subscriptions]
+            [clojure.string :as str]
             [exfn.events]
             [exfn.logic :as ms]
             [goog.string.format]
@@ -40,10 +41,16 @@
 
 (defn get-key-bg [key]
   (let [guessed-letters @(rf/subscribe [:guessed-letters])]
-    (prn key (guessed-letters key))
     (if (guessed-letters key)
       "#3a3a3c"
       "#818384")))
+
+(defn keyboard-row [keys]
+  [:div.keyboard-row
+   (for [letter (str/split keys #"-")]
+     [:div.keyboard-key {:on-click #(rf/dispatch [:clicked letter])
+                         :style {:background-color (get-key-bg letter)}
+                         :key letter} letter])])
 
 ;; -- App -------------------------------------------------------------------------
 (defn app []
@@ -60,30 +67,12 @@
        [:div.col.col-lg-4
         [:i.fas.fa-cubes.stats]]]
       [:div.row.guesses
-       [guess-row current-row current-col rows error 1]
-       [guess-row current-row current-col rows error 2]
-       [guess-row current-row current-col rows error 3]
-       [guess-row current-row current-col rows error 4]
-       [guess-row current-row current-col rows error 5]
-       [guess-row current-row current-col rows error 6]]
+       (for [n (range 1 7)]
+         [guess-row current-row current-col rows error n])]
       [:div.keyboard
-       [:div.keyboard-row
-        (for [letter "QWERTYUIOP"]
-          [:div.keyboard-key {:on-click #(rf/dispatch [:clicked letter])
-                              :style {:background-color (get-key-bg letter)}
-                              :key letter} letter])]
-       [:div.keyboard-row
-        (for [letter "ASDFGHJKL"]
-          [:div.keyboard-key {:on-click #(rf/dispatch [:clicked letter])
-                              :style {:background-color (get-key-bg letter)}
-                              :key letter} letter])]
-       [:div.keyboard-row
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "ENTER"])} "ENTER"]
-        (for [letter "ZXCVBNM"]
-          [:div.keyboard-key {:on-click #(rf/dispatch [:clicked letter])
-                              :style {:background-color (get-key-bg letter)}
-                              :key letter} letter])
-        [:div.keyboard-key {:on-click #(rf/dispatch [:clicked "DEL"])} "DEL"]]]]]))
+       [keyboard-row "Q-W-E-R-T-Y-U-I-O-P"]
+       [keyboard-row "A-S-D-F-G-H-J-K-L"]
+       [keyboard-row "ENTER-Z-X-C-V-B-N-M-DEL"]]]]))
 
 ;; -- After-Load --------------------------------------------------------------------
 ;; Do this after the page has loaded.
@@ -98,8 +87,6 @@
   (set! (.-onkeydown js/window)
         (fn [gfg]
           (rf/dispatch-sync [:key-pressed (.-keyCode gfg)])))
-  #_(rf/dispatch-sync [::rp/add-keyboard-event-listener "keypress" :clear-on-success-event-match])
-  
   (start))
 
 ; dispatch the event which will create the initial state. 

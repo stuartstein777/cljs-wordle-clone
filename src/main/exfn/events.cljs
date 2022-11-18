@@ -32,7 +32,8 @@
 (defn valid-key? [key]
   ((set "ABCDEFGHJIKLMNOPQRSTUVWXYZ") key))
 
-(defn process-key [{:keys [guesses current-row current-col :guessed-letters] :as db} key]
+(defn process-key
+  [{:keys [guesses current-row current-col :guessed-letters] :as db} key]
   (condp = key
     "DEL" (if (>= current-col 1)
             (-> db

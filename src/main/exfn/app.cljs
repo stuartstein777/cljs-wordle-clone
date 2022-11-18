@@ -39,17 +39,18 @@
        :key (str row-no "-" n)}
       (get-in rows [row-no n])])])
 
-(defn get-key-bg [key]
-  (let [guessed-letters @(rf/subscribe [:guessed-letters])]
-    (if (guessed-letters key)
-      "#3a3a3c"
-      "#818384")))
+;; TODO: Think this needs to be a form-2 component and return a render fn.
+;; TODO: that way I won't have to pass guessed-letters all the way down.
+(defn get-key-bg [guessed-letters key]
+      (if (guessed-letters key)
+        "#3a3a3c"
+        "#818384"))
 
-(defn keyboard-row [keys]
+(defn keyboard-row [keys guessed-letters]
   [:div.keyboard-row
    (for [letter (str/split keys #"-")]
      [:div.keyboard-key {:on-click #(rf/dispatch [:clicked letter])
-                         :style {:background-color (get-key-bg letter)}
+                         :style {:background-color (get-key-bg guessed-letters letter)}
                          :key letter} letter])])
 
 ;; -- App -------------------------------------------------------------------------
@@ -57,7 +58,8 @@
   (let [rows  @(rf/subscribe [:guesses])
         error @(rf/subscribe [:error])
         current-row @(rf/subscribe [:current-row])
-        current-col @(rf/subscribe [:current-col])]
+        current-col @(rf/subscribe [:current-col])
+        guessed-letters @(rf/subscribe [:guessed-letters])]
     [:div.container
      [:div.game
       [error-message]
@@ -70,9 +72,9 @@
        (for [n (range 1 7)]
          [guess-row current-row current-col rows error n])]
       [:div.keyboard
-       [keyboard-row "Q-W-E-R-T-Y-U-I-O-P"]
-       [keyboard-row "A-S-D-F-G-H-J-K-L"]
-       [keyboard-row "ENTER-Z-X-C-V-B-N-M-DEL"]]]]))
+       [keyboard-row "Q-W-E-R-T-Y-U-I-O-P" guessed-letters]
+       [keyboard-row "A-S-D-F-G-H-J-K-L" guessed-letters]
+       [keyboard-row "ENTER-Z-X-C-V-B-N-M-DEL" guessed-letters]]]]))
 
 ;; -- After-Load --------------------------------------------------------------------
 ;; Do this after the page has loaded.

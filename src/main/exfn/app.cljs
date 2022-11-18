@@ -35,12 +35,11 @@
                          (= row-no current-row)
                          (not= "" (get-in rows [row-no n])))
        :data-error (and error (= current-row row-no))
+       :data-guessed (= 1 (- current-row row-no))
        :style {:background-color (guess-background n row-no)}
        :key (str row-no "-" n)}
       (get-in rows [row-no n])])])
 
-;; TODO: Think this needs to be a form-2 component and return a render fn.
-;; TODO: that way I won't have to pass guessed-letters all the way down.
 (defn get-key-bg [guessed-letters key]
   (if (guessed-letters key)
     "#3a3a3c"

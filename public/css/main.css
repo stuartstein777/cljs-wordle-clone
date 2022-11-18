@@ -159,3 +159,22 @@ body{
         visibility: hidden;
     }
 }
+
+.letter-cell[data-guessed=true] {
+    animation-name: flip-in;
+    animation-duration: 500ms;
+    animation-iteration-count: 1;
+}
+
+@keyframes flip-in {
+    0% {
+        transform: rotateX(0deg);
+    }
+    50%{
+        transform: rotateX(-90deg);
+    }
+    100%{
+        transform: rotateX(0deg);
+    }
+}
+

@@ -5,21 +5,43 @@
             [clojure.string :as str]
             [exfn.words :as w]))
 
+(def reset-guesses
+  {1 {1 "", 2 "", 3 "", 4 "", 5 ""}
+   2 {1 "", 2 "", 3 "", 4 "", 5 ""}
+   3 {1 "", 2 "", 3 "", 4 "", 5 ""}
+   4 {1 "", 2 "", 3 "", 4 "", 5 ""}
+   5 {1 "", 2 "", 3 "", 4 "", 5 ""}
+   6 {1 "", 2 "", 3 "", 4 "", 5 ""}})
+
+(defn get-word []
+  (-> w/words
+      shuffle
+      first
+      str/upper-case))
+
 (rf/reg-event-db
  :initialize
  (fn [_ _]
-   {:word    (-> w/words
-                 shuffle
-                 first
-                 str/upper-case)
-    
-    :guesses {1 {1 "", 2 "", 3 "", 4 "", 5 ""}
-              2 {1 "", 2 "", 3 "", 4 "", 5 ""}
-              3 {1 "", 2 "", 3 "", 4 "", 5 ""}
-              4 {1 "", 2 "", 3 "", 4 "", 5 ""}
-              5 {1 "", 2 "", 3 "", 4 "", 5 ""}
-              6 {1 "", 2 "", 3 "", 4 "", 5 ""}}
-    
+   {:word    (get-word)
+    :guesses reset-guesses
+    :guessed-letters #{}
+    :correct-letters {:green  #{}
+                      :yellow #{}}
+    :current-row 1
+    :current-col 0
+    :error false
+    :stats {:current-streak 0
+            :max-streak 0
+            :solves {1 0, 2 0, 3 0, 4 0, 5 0, 6 0, :fail 0}
+            :played 0}
+    :game-state :playing}))
+
+(rf/reg-event-db 
+ :new-game
+ (fn [{:keys [stats]} _]
+   {:stats stats
+    :word (get-word)
+    :guesses reset-guesses
     :guessed-letters #{}
     :correct-letters {:green  #{}
                       :yellow #{}}
@@ -46,10 +68,18 @@
 (defn set-game-over [{:keys [word current-row] :as db} guess]
   (cond 
     (= word guess)
-    (assoc db :game-state :won)
+    (-> db
+        (assoc :game-state :won)
+        (update-in [:stats :current-streak] inc)
+        (update-in [:stats :max-streak]
+                   (fn [cs] (max cs (inc (-> db :stats :current-streak)))))
+        (update-in [:stats :solves (dec current-row)] inc))
     
     (= current-row 7)
-    (assoc db :game-state :lost)
+    (-> db
+        (assoc :game-state :lost)
+        (assoc-in [:stats :current-streak] 0)
+        (update-in [:states :solves :fail] inc))
     
     :else
     (assoc db :game-state :playing)))

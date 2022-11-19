@@ -19,6 +19,8 @@
     "spots"
     "pluto"
     "plots"
+    "trips"
+    "spate"
 "acrid"
 "actor"
 "acute"

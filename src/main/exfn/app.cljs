@@ -114,7 +114,7 @@
                              :won :visible
                              :lost :visible
                              :playing :hidden)}
-       :on-click #(rf/dispatch [:initialize])}
+       :on-click #(rf/dispatch [:new-game])}
       "New Game"]]))
 
 ;; -- App -------------------------------------------------------------------------
@@ -131,7 +131,7 @@
        [:div.col.col-lg-8
         [:h1 "Wordle"]]
        [:div.col.col-lg-4
-        #_[:i.fas.fa-cubes.stats]]]
+        [:i.fas.fa-cubes.stats]]]
       [:div.row.guesses
        (for [n (range 1 7)]
          [guess-row current-row current-col rows error n game-state])]

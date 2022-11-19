@@ -12,15 +12,25 @@
   (let [error @(rf/subscribe [:error])
         game-state @(rf/subscribe [:game-state])
         current-row @(rf/subscribe [:current-row])
-        num-of-guesses (dec current-row)]
+        num-of-guesses (dec current-row)
+        word @(rf/subscribe [:word])]
     [:div.invalid-word-error
-     (if error
+     (cond
+       error
        {:data-error error}
-       {:data-win (= game-state :won)})
+
+       (= game-state :won)
+       {:data-win (= game-state :won)}
+
+       (= game-state :lost)
+       {:data-lost (= game-state :lost)})
      (cond
        error
        "Not in word list!"
 
+       (= game-state :lost)
+       word
+       
        (and (= game-state :won) (= num-of-guesses 1))
        "Genuis!"
 
@@ -36,7 +46,7 @@
        (and (= game-state :won) (= num-of-guesses 5))
        "Great!"
 
-       (and (= game-state :won) (= num-of-guesses 5))
+       (and (= game-state :won) (= num-of-guesses 6))
        "Phew!")]))
 
 (defn guess-background [col row]

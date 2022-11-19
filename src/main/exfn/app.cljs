@@ -122,10 +122,3 @@
 
 ; dispatch the event which will create the initial state. 
 (defonce initialize (rf/dispatch-sync [:initialize]))
-
-
-
-
-(comment
-
-  )

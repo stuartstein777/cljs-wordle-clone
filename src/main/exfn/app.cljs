@@ -8,11 +8,36 @@
             [goog.string.format]
             [re-pressed.core :as rp]))
 
-(defn error-message []
-  (let [error @(rf/subscribe [:error])]
+(defn display-message []
+  (let [error @(rf/subscribe [:error])
+        game-state @(rf/subscribe [:game-state])
+        current-row @(rf/subscribe [:current-row])
+        num-of-guesses (dec current-row)]
     [:div.invalid-word-error
-     {:data-error error}
-     "Not in word list!"]))
+     (if error
+       {:data-error error}
+       {:data-win (= game-state :won)})
+     (cond
+       error
+       "Not in word list!"
+
+       (and (= game-state :won) (= num-of-guesses 1))
+       "Genuis!"
+
+       (and (= game-state :won) (= num-of-guesses 2))
+       "Magnificient!"
+
+       (and (= game-state :won) (= num-of-guesses 3))
+       "Impressive!"
+
+       (and (= game-state :won) (= num-of-guesses 4))
+       "Splendid!"
+
+       (and (= game-state :won) (= num-of-guesses 5))
+       "Great!"
+
+       (and (= game-state :won) (= num-of-guesses 5))
+       "Phew!")]))
 
 (defn guess-background [col row]
   (let [word        @(rf/subscribe [:word])
@@ -66,12 +91,12 @@
         game-state @(rf/subscribe [:game-state])]
     [:div.container
      [:div.game
-      [error-message]
+      [display-message]
       [:div.row
        [:div.col.col-lg-8
         [:h1 "Wordle"]]
        [:div.col.col-lg-4
-        [:i.fas.fa-cubes.stats]]]
+        #_[:i.fas.fa-cubes.stats]]]
       [:div.row.guesses
        (for [n (range 1 7)]
          [guess-row current-row current-col rows error n game-state])]

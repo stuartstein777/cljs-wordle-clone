@@ -143,9 +143,16 @@ body{
     top: 50px;
     left: 30%;
     visibility: hidden;
+    text-align: center;
 }
 
 .invalid-word-error[data-error=true] {
+    animation-name: show-error;
+    animation-duration: 2000ms;
+    animation-iteration-count: 1;
+}
+
+.invalid-word-error[data-win=true] {
     animation-name: show-error;
     animation-duration: 2000ms;
     animation-iteration-count: 1;

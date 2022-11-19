@@ -5,8 +5,7 @@
             [clojure.string :as str]
             [exfn.events]
             [exfn.logic :as ms]
-            [goog.string.format]
-            [re-pressed.core :as rp]))
+            [goog.string.format]))
 
 (defn display-message []
   (let [error @(rf/subscribe [:error])
@@ -79,18 +78,44 @@
        :key (str row-no "-" n)}
       (get-in rows [row-no n])])])
 
-(defn get-key-bg [guessed-letters key]
-  (if (guessed-letters key)
+(set "abc")
+
+(defn get-key-bg [guessed-letters correct-letters key word]
+  (cond
+    (and (guessed-letters key) ((-> correct-letters :green) key))
+    "#538d4e"
+    
+    (and (guessed-letters key) ((-> correct-letters :yellow) key))
+    "#b59f3b"
+    
+    (guessed-letters key)
     "#3a3a3c"
+    
+    :else
     "#818384"))
 
 (defn keyboard-row [keys]
-  (let [guessed-letters @(rf/subscribe [:guessed-letters])]
+  (let [guessed-letters @(rf/subscribe [:guessed-letters])
+        correct-letters @(rf/subscribe [:correct-letters])
+        word @(rf/subscribe [:word])]
     [:div.keyboard-row
      (for [letter (str/split keys #"-")]
-       [:div.keyboard-key {:on-click #(rf/dispatch [:clicked letter])
-                           :style {:background-color (get-key-bg guessed-letters letter)}
-                           :key letter} letter])]))
+       [:div.keyboard-key 
+        {:on-click #(rf/dispatch [:clicked letter])
+         :style    {:background-color (get-key-bg guessed-letters correct-letters letter word)}
+         :key      letter} letter])]))
+
+(defn new-game-row []
+  (let [game-state @(rf/subscribe [:game-state])]
+    [:div.keyboard-row
+     [:div.keyboard-key
+      {:style {:width "100%"
+               :visibility (condp = game-state
+                             :won :visible
+                             :lost :visible
+                             :playing :hidden)}
+       :on-click #(rf/dispatch [:initialize])}
+      "New Game"]]))
 
 ;; -- App -------------------------------------------------------------------------
 (defn app []
@@ -113,7 +138,8 @@
       [:div.keyboard
        [keyboard-row "Q-W-E-R-T-Y-U-I-O-P"]
        [keyboard-row "A-S-D-F-G-H-J-K-L"]
-       [keyboard-row "ENTER-Z-X-C-V-B-N-M-DEL"]]]]))
+       [keyboard-row "ENTER-Z-X-C-V-B-N-M-DEL"]
+       [new-game-row]]]]))
 
 ;; -- After-Load --------------------------------------------------------------------
 ;; Do this after the page has loaded.

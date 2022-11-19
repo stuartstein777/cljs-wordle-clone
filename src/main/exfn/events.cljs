@@ -3,8 +3,7 @@
             [exfn.logic :as bf]
             [clojure.set :as set]
             [clojure.string :as str]
-            [exfn.words :as w]
-            [re-pressed.core :as rp]))
+            [exfn.words :as w]))
 
 (rf/reg-event-db
  :initialize
@@ -22,6 +21,8 @@
               6 {1 "", 2 "", 3 "", 4 "", 5 ""}}
     
     :guessed-letters #{}
+    :correct-letters {:green  #{}
+                      :yellow #{}}
     :current-row 1
     :current-col 0
     :error false
@@ -32,6 +33,15 @@
 
 (defn valid-key? [key]
   ((set "ABCDEFGHJIKLMNOPQRSTUVWXYZ") key))
+
+(defn get-correct-letters [word guess]
+  (let [green (->> (map (fn [w g] (if (= w g) g nil)) word guess)
+                   (remove nil?)
+                   set)
+
+        yellow (set/difference (set (filter (fn [g] ((set word) g)) guess)) green)]
+    {:green green
+     :yellow yellow}))
 
 (defn set-game-over [{:keys [word current-row] :as db} guess]
   (cond 
@@ -45,7 +55,7 @@
     (assoc db :game-state :playing)))
 
 (defn process-key
-  [{:keys [guesses current-row current-col :guessed-letters game-state] :as db} key]
+  [{:keys [guesses current-row current-col :guessed-letters game-state word] :as db} key]
   (condp = key
     "DEL" (if (>= current-col 1)
             (-> db
@@ -62,6 +72,7 @@
                   (-> db
                       (assoc :error false)
                       (update :current-row inc)
+                      (assoc :correct-letters (get-correct-letters word guess))
                       (assoc :guessed-letters (set/union guessed-letters (set guess)))
                       (assoc :current-col 0)
                       (set-game-over guess))

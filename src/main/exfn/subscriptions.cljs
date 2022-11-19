@@ -28,3 +28,7 @@
 (rf/reg-sub
  :game-state
  (fn [db _] (db :game-state)))
+
+(rf/reg-sub
+ :correct-letters
+ (fn [db _] (db :correct-letters)))

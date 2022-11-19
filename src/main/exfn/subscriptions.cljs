@@ -24,3 +24,7 @@
 (rf/reg-sub
  :guessed-letters
  (fn [db _] (db :guessed-letters)))
+
+(rf/reg-sub
+ :game-state
+ (fn [db _] (db :game-state)))

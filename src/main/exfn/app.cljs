@@ -27,7 +27,7 @@
         "#3a3a3c")
       "#121213")))
 
-(defn guess-row [current-row current-col rows error row-no]
+(defn guess-row [current-row current-col rows error row-no game-state]
   [:div.row {:style {:justify-content :center}}
    (for [n (range 1 6)]
      [:div.letter-cell
@@ -36,6 +36,10 @@
                          (not= "" (get-in rows [row-no n])))
        :data-error (and error (= current-row row-no))
        :data-guessed (= 1 (- current-row row-no))
+       
+       (keyword (str "data-won" n))
+       (and (= 1 (- current-row row-no)) (= game-state :won))
+       
        :style {:background-color (guess-background n row-no)}
        :key (str row-no "-" n)}
       (get-in rows [row-no n])])])
@@ -58,7 +62,8 @@
   (let [rows  @(rf/subscribe [:guesses])
         error @(rf/subscribe [:error])
         current-row @(rf/subscribe [:current-row])
-        current-col @(rf/subscribe [:current-col])]
+        current-col @(rf/subscribe [:current-col])
+        game-state @(rf/subscribe [:game-state])]
     [:div.container
      [:div.game
       [error-message]
@@ -69,7 +74,7 @@
         [:i.fas.fa-cubes.stats]]]
       [:div.row.guesses
        (for [n (range 1 7)]
-         [guess-row current-row current-col rows error n])]
+         [guess-row current-row current-col rows error n game-state])]
       [:div.keyboard
        [keyboard-row "Q-W-E-R-T-Y-U-I-O-P"]
        [keyboard-row "A-S-D-F-G-H-J-K-L"]
@@ -92,16 +97,10 @@
 
 ; dispatch the event which will create the initial state. 
 (defonce initialize (rf/dispatch-sync [:initialize]))
-#_(defonce set-up-keypress (rf/dispatch-sync [::rp/add-keyboard-event-listener "keypress" :clear-on-success-event-match]))
 
 
 
 
 (comment
-  {a 65 
-   q 81
-   W 87
-   E 69}
 
-  (char 81)
   )

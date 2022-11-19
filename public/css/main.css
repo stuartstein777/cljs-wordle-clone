@@ -168,13 +168,79 @@ body{
 
 @keyframes flip-in {
     0% {
-        transform: rotateX(0deg);
+        transform: rotateY(0deg);
     }
     50%{
-        transform: rotateX(-90deg);
+        transform: rotateY(-90deg);
     }
     100%{
-        transform: rotateX(0deg);
+        transform: rotateY(0deg);
     }
 }
 
+.letter-cell[data-won1=true] {
+    animation-name: win;
+    animation-duration: 750ms;
+    animation-delay: 100ms;
+    animation-iteration-count: 1;
+}
+
+.letter-cell[data-won2=true] {
+    animation-name: win;
+    animation-duration: 750ms;
+    animation-delay: 200ms;
+    animation-iteration-count: 1;
+}
+
+.letter-cell[data-won3=true] {
+    animation-name: win;
+    animation-duration: 750ms;
+    animation-delay: 300ms;
+    animation-iteration-count: 1;
+}
+
+.letter-cell[data-won4=true] {
+    animation-name: win;
+    animation-duration: 750ms;
+    animation-delay: 400ms;
+    animation-iteration-count: 1;
+}
+
+.letter-cell[data-won5=true] {
+    animation-name: win;
+    animation-duration: 750ms;
+    animation-delay: 500ms;
+    animation-iteration-count: 1;
+}
+
+@keyframes win {
+    0%,20%{
+        transform: translateY(0);
+        /* transform: rotate(0deg);
+        transform: scale(0.8); */
+    }
+    40%{
+        transform: translateY(-30px);
+        /* transform: rotate(180); */
+        /* transform: scale(1.3) */
+    }
+    50%{
+        transform: translateY(5px);
+        /* transform: rotate(180); */
+        /* transform: scale(1.3) */
+    }
+    60%{
+        transform: translateY(-15px);
+        /* transform: rotate(270); */
+        /* transform: scale(1.3) */
+    }
+    80%{
+        transform: translateY(2px);
+    }
+    100%{
+        /*
+        transform: rotate(360deg);
+        transform: scale(0.8);*/
+        transform: translateY(0);
+    }
+}

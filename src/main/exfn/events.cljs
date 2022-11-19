@@ -24,7 +24,8 @@
     :guessed-letters #{}
     :current-row 1
     :current-col 0
-    :error false}))
+    :error false
+    :game-state :playing}))
 
 (defn clamp [n]
   (min (max n 0) 5))
@@ -32,8 +33,19 @@
 (defn valid-key? [key]
   ((set "ABCDEFGHJIKLMNOPQRSTUVWXYZ") key))
 
+(defn set-game-over [{:keys [word current-row] :as db} guess]
+  (cond 
+    (= word guess)
+    (assoc db :game-state :won)
+    
+    (= current-row 7)
+    (assoc db :game-state :lost)
+    
+    :else
+    (assoc db :game-state :playing)))
+
 (defn process-key
-  [{:keys [guesses current-row current-col :guessed-letters] :as db} key]
+  [{:keys [guesses current-row current-col :guessed-letters game-state] :as db} key]
   (condp = key
     "DEL" (if (>= current-col 1)
             (-> db
@@ -43,19 +55,20 @@
             db)
 
     "ENTER" (if (= 5 current-col)
-              (let [word (->> (get-in guesses [current-row])
-                              vals
-                              (apply str))]
-                (if (w/words (str/lower-case word))
+              (let [guess (->> (get-in guesses [current-row])
+                               vals
+                               (apply str))]
+                (if (w/words (str/lower-case guess))
                   (-> db
                       (assoc :error false)
                       (update :current-row inc)
-                      (assoc :guessed-letters (set/union guessed-letters (set word)))
-                      (assoc :current-col 0))
+                      (assoc :guessed-letters (set/union guessed-letters (set guess)))
+                      (assoc :current-col 0)
+                      (set-game-over guess))
                   (assoc db :error true)))
               db)
 
-    (if (and (valid-key? key) (not= current-col 5))
+    (if (and (= game-state :playing) (valid-key? key) (not= current-col 5))
       (-> db
           (update :guesses assoc-in [current-row (inc current-col)] key)
           (update :current-col #(clamp (inc %)))

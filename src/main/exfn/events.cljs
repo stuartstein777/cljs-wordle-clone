@@ -32,8 +32,10 @@
     :error false
     :stats {:current-streak 0
             :max-streak 0
+            :wins 0
             :solves {1 0, 2 0, 3 0, 4 0, 5 0, 6 0, :fail 0}
             :played 0}
+    :stats-visible true
     :game-state :playing}))
 
 (rf/reg-event-db 
@@ -45,6 +47,7 @@
     :guessed-letters #{}
     :correct-letters {:green  #{}
                       :yellow #{}}
+    :stats-visible false
     :current-row 1
     :current-col 0
     :error false
@@ -73,13 +76,16 @@
         (update-in [:stats :current-streak] inc)
         (update-in [:stats :max-streak]
                    (fn [cs] (max cs (inc (-> db :stats :current-streak)))))
-        (update-in [:stats :solves (dec current-row)] inc))
+        (update-in [:stats :solves (dec current-row)] inc)
+        (update-in [:stats :played] inc)
+        (update-in [:stats :wins] inc))
     
     (= current-row 7)
     (-> db
         (assoc :game-state :lost)
         (assoc-in [:stats :current-streak] 0)
-        (update-in [:states :solves :fail] inc))
+        (update-in [:states :solves :fail] inc)
+        (update-in [:stats :played] inc))
     
     :else
     (assoc db :game-state :playing)))
@@ -125,3 +131,8 @@
  :key-pressed
  (fn [db [_ key]]
    (process-key db ({13 "ENTER", 8 "DEL"} key (char key)))))
+
+(rf/reg-event-db
+ :toggle-stats
+ (fn [db _]
+   (update db :stats-visible not)))

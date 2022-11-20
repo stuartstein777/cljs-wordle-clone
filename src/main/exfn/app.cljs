@@ -48,6 +48,36 @@
        (and (= game-state :won) (= num-of-guesses 6))
        "Phew!")]))
 
+(defn stats-view []
+  (let [stats @(rf/subscribe [:stats])
+        stats-visible @(rf/subscribe [:stats-visible])]
+    [:div.stats-view
+     {:style {:visibility (if stats-visible :visible :hidden)}}
+     [:div.row.closex {:on-click #(rf/dispatch-sync [:toggle-stats])}
+      "X"]
+     [:div.row {:style {:width "100%"}}
+      [:h4 "Stats for session"]]
+     [:div.row.streak-summary {:style {:width "100%"}}
+      [:div.col.streak-value
+       (stats :played)]
+      [:div.col.streak-value
+       (if (> (stats :played) 0)
+         (* (/ (stats :wins) (stats :played)) 100.0)
+         "-")]
+      [:div.col.streak-value
+       (stats :current-streak)]
+      [:div.col.streak-value
+       (stats :max-streak)]]
+     [:div.row.streak-summary {:style {:width "100%"}}
+      [:div.col.streak-header
+       "Played"]
+      [:div.col.streak-header
+       "Win %"]
+      [:div.col.streak-header
+       "Current streak"]
+      [:div.col.streak-header
+       "Max streak"]]]))
+
 (defn guess-background [col row]
   (let [word        @(rf/subscribe [:word])
         current-row @(rf/subscribe [:current-row])
@@ -77,8 +107,6 @@
        :style {:background-color (guess-background n row-no)}
        :key (str row-no "-" n)}
       (get-in rows [row-no n])])])
-
-(set "abc")
 
 (defn get-key-bg [guessed-letters correct-letters key word]
   (cond
@@ -127,11 +155,12 @@
     [:div.container
      [:div.game
       [display-message]
+      [stats-view]
       [:div.row
        [:div.col.col-lg-8
         [:h1 "Wordle"]]
        [:div.col.col-lg-4
-        [:i.fas.fa-cubes.stats]]]
+        [:i.fas.fa-cubes.stats {:on-click #(rf/dispatch-sync [:toggle-stats])}]]]
       [:div.row.guesses
        (for [n (range 1 7)]
          [guess-row current-row current-col rows error n game-state])]
@@ -158,3 +187,4 @@
 
 ; dispatch the event which will create the initial state. 
 (defonce initialize (rf/dispatch-sync [:initialize]))
+

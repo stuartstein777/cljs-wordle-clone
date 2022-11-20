@@ -32,3 +32,11 @@
 (rf/reg-sub
  :correct-letters
  (fn [db _] (db :correct-letters)))
+
+(rf/reg-sub
+ :stats
+ (fn [db _] (db :stats)))
+
+(rf/reg-sub
+ :stats-visible
+ (fn [db _] (db :stats-visible)))

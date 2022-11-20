@@ -129,6 +129,7 @@ body{
 .stats {
     margin-top: 5px;
     font-size: 32px;
+    cursor: pointer;
 }
 
 .invalid-word-error {
@@ -146,6 +147,42 @@ body{
     text-align: center;
 }
 
+.stats-view {
+    background-color: black;
+    color: white;
+    position: absolute;
+    border-radius: 4px;
+    border: 1px solid #3a3a3c;
+    width: 350px;
+    height: 500px;
+    top: 50px;
+    left: 12.5%;
+    visibility: visible;
+    text-align: center;
+}
+
+.streak-summary {
+    text-align: left;
+    margin-left: 0px;
+    width: 100%;
+}
+
+.streak-summary-headers {
+    display: inline-block;
+    text-align: left;
+    width: 100%;
+}
+
+.streak-header {
+    text-align: center;
+    font-size: 0.9em;
+    font-weight: light;
+}
+
+.streak-value {
+    text-align: center;
+    font-size: 1.9em;
+}
 .invalid-word-error[data-error=true] {
     color: black;
     animation-name: show-error;
@@ -249,4 +286,13 @@ body{
     100%{
         transform: translateY(0);
     }
+}
+
+.closex{
+    float: right;
+    font-weight: bolder;
+    font-size: 1.5em;
+    margin-top: 0;
+    margin-right: 10px;
+    cursor: pointer;
 }

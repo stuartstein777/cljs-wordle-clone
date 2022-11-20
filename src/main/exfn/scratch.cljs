@@ -3,38 +3,30 @@
             [clojure.string :as str]
             [clojure.set :as set]))
 
-(let [guesses {1 10
-               2 20
-               3 8
-               4 4
-               5 2
-               6 11}
-      max-width 10]
-  
-  (let [max (->> guesses vals (apply max))]
-    {1 (int (* max-width (/ (guesses 1) max)))
-     2 (int (* max-width (/ (guesses 2) max)))
-     3 (int (* max-width (/ (guesses 3) max)))
-     4 (int (* max-width (/ (guesses 4) max)))
-     5 (int (* max-width (/ (guesses 5) max)))
-     6 (int (* max-width (/ (guesses 6) max)))
-     }
-    )
-  )
+(defn write-cookie [stats-and-guesses]
+  (str "guess-1=" (apply str (vals ((->> stats-and-guesses :guesses) 1))) ";"
+       "guess-2=" (apply str (vals ((->> stats-and-guesses :guesses) 2))) ";"
+       "guess-3=" (apply str (vals ((->> stats-and-guesses :guesses) 3))) ";"
+       "guess-4=" (apply str (vals ((->> stats-and-guesses :guesses) 4))) ";"
+       "guess-5=" (apply str (vals ((->> stats-and-guesses :guesses) 5))) ";"
+       "guess-6=" (apply str (vals ((->> stats-and-guesses :guesses) 6))) ";"
+       "current-streak=" (-> stats-and-guesses :stats :current-streak)
+       "max-streak=" (-> stats-and-guesses :stats :max-streak)
+       "wins=" (-> stats-and-guesses :stats :wins)
+       "played=" (-> stats-and-guesses :stats :wins)
+       "solves=" (str/join "," (-> stats-and-guesses :stats :solves vals))))
 
-(defn guess-distribution-histogram [guesses]
-  (let [max (->> guesses vals (apply max))]
-    {1 (int (* 150 (/ (guesses 1) max)))
-     2 (int (* 150 (/ (guesses 2) max)))
-     3 (int (* 150 (/ (guesses 3) max)))
-     4 (int (* 150 (/ (guesses 4) max)))
-     5 (int (* 150 (/ (guesses 5) max)))
-     6 (int (* 150 (/ (guesses 6) max)))}))
+(write-cookie
+ {:guesses {1 {1 "S", 2 "H", 3 "O", 4 "R", 5 "E"}
+            2 {1 "W", 2 "O", 3 "M", 4 "A", 5 "N"}
+            3 {1 "", 2 "", 3 "", 4 "", 5 ""}
+            4 {1 "", 2 "", 3 "", 4 "", 5 ""}
+            5 {1 "", 2 "", 3 "", 4 "", 5 ""}
+            6 {1 "", 2 "", 3 "", 4 "", 5 ""}}
+  :stats {:current-streak 0
+          :max-streak 0
+          :wins 0
+          :solves {1 10, 2 2, 3 1, 4 0, 5 0, 6 0}
+          :played 0}})
 
-
-; 1 #####                 (10 / 20) = 0.5, 0.5 * 10 = 5
-; 2 ##########            (20 / 20) = 1.0, 1.0 * 10 = 10
-; 3 ####
-; 4 ##
-; 5 #
-; 6 #####
+"guess-1=SHORE;guess-2=WOMAN;guess-3=;guess-4=;guess-5=;guess-6=;current-streak=0max-streak=0wins=0played=0solves=10,2,1,0,0,0"

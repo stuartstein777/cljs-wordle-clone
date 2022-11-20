@@ -19,6 +19,11 @@
       first
       str/upper-case))
 
+(rf/reg-fx
+ :save-to-cookie
+ (fn [stats-and-guesses]
+   (.cookie js/document )))
+
 (rf/reg-event-db
  :initialize
  (fn [_ _]

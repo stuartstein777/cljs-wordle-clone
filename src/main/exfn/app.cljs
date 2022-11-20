@@ -91,7 +91,8 @@
                :width "100%"}}
       [:h4 "GUESS DISTRIBUTION"]]
      (let [solves (lgc/guess-distribution-histogram (stats :solves))]
-       [:div.row {:style {:display :grid}}
+       [:div.row {:style {:display :grid
+                          :padding-left "20px"}}
         (for [n (range 1 7)]
           [histogram-row n solves stats])])]))
 

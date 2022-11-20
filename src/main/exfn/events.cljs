@@ -33,7 +33,7 @@
     :stats {:current-streak 0
             :max-streak 0
             :wins 0
-            :solves {1 0, 2 0, 3 0, 4 0, 5 0, 6 0, :fail 0}
+            :solves {1 0, 2 0, 3 0, 4 0, 5 0, 6 0}
             :played 0}
     :stats-visible true
     :game-state :playing}))
@@ -84,7 +84,6 @@
     (-> db
         (assoc :game-state :lost)
         (assoc-in [:stats :current-streak] 0)
-        (update-in [:states :solves :fail] inc)
         (update-in [:stats :played] inc))
     
     :else

@@ -296,3 +296,14 @@ body{
     margin-right: 10px;
     cursor: pointer;
 }
+
+.histogram-bar {
+    height: 25px;
+    border: 1px solid;
+    border-color: white;
+    text-align: right;
+    padding-right: 5px;
+    min-width: 25px;
+    margin: 2px;
+    font-size: 0.8em;
+}

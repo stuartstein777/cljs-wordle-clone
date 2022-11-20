@@ -4,7 +4,7 @@
             [exfn.subscriptions]
             [clojure.string :as str]
             [exfn.events]
-            [exfn.logic :as ms]
+            [exfn.logic :as lgc]
             [goog.string.format]))
 
 (defn display-message []
@@ -48,6 +48,15 @@
        (and (= game-state :won) (= num-of-guesses 6))
        "Phew!")]))
 
+(defn histogram-row [n solves stats]
+  [:div.row {:style {:width "100%"}}
+   [:div.col.col-lg-2 n]
+   [:div.col.col-lg-10
+    [:div.histogram-bar
+     {:style {:width (solves n)
+              :background-color (if (> (solves n) 0) "#538d4e" "#3a3a3c")}}
+     (get (stats :solves) n)]]])
+
 (defn stats-view []
   (let [stats @(rf/subscribe [:stats])
         stats-visible @(rf/subscribe [:stats-visible])]
@@ -76,7 +85,15 @@
       [:div.col.streak-header
        "Current streak"]
       [:div.col.streak-header
-       "Max streak"]]]))
+       "Max streak"]]
+     [:div.row 
+      {:style {:padding-top "20px"
+               :width "100%"}}
+      [:h4 "GUESS DISTRIBUTION"]]
+     (let [solves (lgc/guess-distribution-histogram (stats :solves))]
+       [:div.row {:style {:display :grid}}
+        (for [n (range 1 7)]
+          [histogram-row n solves stats])])]))
 
 (defn guess-background [col row]
   (let [word        @(rf/subscribe [:word])

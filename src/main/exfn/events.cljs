@@ -40,7 +40,7 @@
             :wins 0
             :solves {1 0, 2 0, 3 0, 4 0, 5 0, 6 0}
             :played 0}
-    :stats-visible true
+    :stats-visible false
     :game-state :playing}))
 
 (rf/reg-event-db 

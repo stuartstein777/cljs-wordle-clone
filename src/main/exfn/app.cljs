@@ -71,7 +71,7 @@
        (stats :played)]
       [:div.col.streak-value
        (if (> (stats :played) 0)
-         (* (/ (stats :wins) (stats :played)) 100.0)
+         (int (* (/ (stats :wins) (stats :played)) 100.0))
          "-")]
       [:div.col.streak-value
        (stats :current-streak)]

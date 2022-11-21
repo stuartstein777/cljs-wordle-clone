@@ -1,5 +1,8 @@
 # Wordle Clone
 
+## Play
+
+See it at https://stuartstein777.github.io/wordle-clone/index.html
 
 ## Dev Notes
 ```bash

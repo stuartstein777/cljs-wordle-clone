@@ -54,7 +54,8 @@
    [:div.col.col-lg-10
     [:div.histogram-bar
      {:style {:width (solves n)
-              :background-color (if (> (solves n) 0) "#538d4e" "#3a3a3c")}}
+              :background-color (if (> (solves n) 0) "#538d4e" "#3a3a3c")}
+      :key (str "stats-" n)}
      (get (stats :solves) n)]]])
 
 (defn stats-view []
@@ -110,23 +111,27 @@
       "#121213")))
 
 (defn guess-row [current-row current-col rows error row-no game-state]
-  [:div.row {:style {:justify-content :center}}
-   (for [n (range 1 6)]
-     [:div.letter-cell
-      {:data-filled (and (= n current-col)
-                         (= row-no current-row)
-                         (not= "" (get-in rows [row-no n])))
-       :data-error (and error (= current-row row-no))
-       :data-guessed (= 1 (- current-row row-no))
-       
-       (keyword (str "data-won" n))
-       (and (= 1 (- current-row row-no)) (= game-state :won))
-       
-       :style {:background-color (guess-background n row-no)}
-       :key (str row-no "-" n)}
-      (get-in rows [row-no n])])])
+  [:div.row {:style {:justify-content :center}
+             :key (str "guess-row-" row-no)}
+   (doall
+    (for [n (range 1 6)]
+      #_(prn (str "guess-row-" row-no "-" n))
+      [:div.letter-cell
+       {:key (str row-no "-" n)
+        
+        :data-filled (and (= n current-col)
+                          (= row-no current-row)
+                          (not= "" (get-in rows [row-no n])))
+        :data-error (and error (= current-row row-no))
+        :data-guessed (= 1 (- current-row row-no))
+        
+        (keyword (str "data-won" n))
+        (and (= 1 (- current-row row-no)) (= game-state :won))
+        
+        :style {:background-color (guess-background n row-no)}}
+       (get-in rows [row-no n])]))])
 
-(defn get-key-bg [guessed-letters correct-letters key word]
+(defn get-key-bg [guessed-letters correct-letters key]
   (cond
     (and (guessed-letters key) ((-> correct-letters :green) key))
     "#538d4e"
@@ -142,13 +147,12 @@
 
 (defn keyboard-row [keys]
   (let [guessed-letters @(rf/subscribe [:guessed-letters])
-        correct-letters @(rf/subscribe [:correct-letters])
-        word @(rf/subscribe [:word])]
+        correct-letters @(rf/subscribe [:correct-letters])]
     [:div.keyboard-row
      (for [letter (str/split keys #"-")]
        [:div.keyboard-key 
         {:on-click #(rf/dispatch [:clicked letter])
-         :style    {:background-color (get-key-bg guessed-letters correct-letters letter word)}
+         :style    {:background-color (get-key-bg guessed-letters correct-letters letter)}
          :key      letter} letter])]))
 
 (defn new-game-row []

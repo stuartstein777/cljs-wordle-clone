@@ -3,7 +3,8 @@
             [exfn.logic :as bf]
             [clojure.set :as set]
             [clojure.string :as str]
-            [exfn.words :as w]))
+            [exfn.words :as w]
+            [cljs.reader :as rdr]))
 
 (def reset-guesses
   {1 {1 "", 2 "", 3 "", 4 "", 5 ""}
@@ -21,27 +22,33 @@
 
 (rf/reg-fx
  :save-to-cookie
- (fn [stats-and-guesses]
-   (.cookie js/document )))
+ (fn [db]
+   (prn db)
+   (set! (.-cookie js/document)
+         (pr-str db))))
 
 (rf/reg-event-db
  :initialize
  (fn [_ _]
-   {:word    (get-word)
-    :guesses reset-guesses
-    :guessed-letters #{}
-    :correct-letters {:green  #{}
-                      :yellow #{}}
-    :current-row 1
-    :current-col 0
-    :error false
-    :stats {:current-streak 0
-            :max-streak 0
-            :wins 0
-            :solves {1 0, 2 0, 3 0, 4 0, 5 0, 6 0}
-            :played 0}
-    :stats-visible false
-    :game-state :playing}))
+   (let [cookie (rdr/read-string (.-cookie js/document))]
+     (prn "cookie" cookie)
+     (if (= cookie {})
+       {:word    (get-word)
+        :guesses reset-guesses
+        :guessed-letters #{}
+        :correct-letters {:green  #{}
+                          :yellow #{}}
+        :current-row 1
+        :current-col 0
+        :error false
+        :stats {:current-streak 0
+                :max-streak 0
+                :wins 0
+                :solves {1 0, 2 0, 3 0, 4 0, 5 0, 6 0}
+                :played 0}
+        :stats-visible false
+        :game-state :playing}
+       cookie))))
 
 (rf/reg-event-db 
  :new-game
@@ -131,10 +138,12 @@
  (fn [db [_ key]]
    (process-key db key)))
 
-(rf/reg-event-db
+(rf/reg-event-fx
  :key-pressed
- (fn [db [_ key]]
-   (process-key db ({13 "ENTER", 8 "DEL"} key (char key)))))
+ (fn [{:keys [db]} [_ key]]
+   (let [updated-db (process-key db ({13 "ENTER", 8 "DEL"} key (char key)))]
+     {:db updated-db
+      :save-to-cookie updated-db})))
 
 (rf/reg-event-db
  :toggle-stats

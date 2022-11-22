@@ -23,7 +23,6 @@
 (rf/reg-fx
  :save-to-cookie
  (fn [db]
-   (prn db)
    (set! (.-cookie js/document)
          (pr-str db))))
 
@@ -31,8 +30,7 @@
  :initialize
  (fn [_ _]
    (let [cookie (rdr/read-string (.-cookie js/document))]
-     (prn "cookie" cookie)
-     (if (= cookie {})
+     (if (or (= cookie {}) (nil? cookie))
        {:word    (get-word)
         :guesses reset-guesses
         :guessed-letters #{}
